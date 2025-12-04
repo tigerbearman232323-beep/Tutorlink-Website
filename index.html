@@ -1,0 +1,2890 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TutorLink | UTAR Open Peer Skills Exchange (OPSE)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ===================== PART A: GLOBAL STYLES (CSS) ===================== -->
+  <style>
+    .mode-pill-group {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mode-pill {
+      background: #e0ecff;
+      color: #0c3b86;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .slot-day {
+      color: #1b7f3a;
+      font-weight: 700;
+    }
+
+    .slot-time {
+      color: #3aa76d;
+      font-weight: 600;
+    }
+
+    html {
+      overflow-y: scroll;  /* always reserve scrollbar space */
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f3f5ff;
+      color: #222;
+    }
+
+    a {
+      color: #0057c8;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ---------- UTAR TOP HEADER (same for all screens) ---------- */
+    .utar-header {
+      width: 100%;
+      background: #001742;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .utar-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .utar-header img {
+      height: 60px;
+      width: auto;
+    }
+
+    .utar-header-text {
+      color: white;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .utar-header-text .uni-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .utar-header-text .sub-text {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* ---------- Centered toast notification ---------- */
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0057c8;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      z-index: 1200;
+      max-width: 90%;
+      text-align: center;
+    }
+
+    /* ---------- Decline modal ---------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1300;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 18px;
+      max-width: 480px;
+      width: 100%;
+      padding: 20px 22px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+    }
+
+    .modal-card h3 {
+      font-size: 18px;
+      margin-bottom: 6px;
+      color: #0057c8;
+    }
+
+    .modal-card p {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .modal-card textarea {
+      width: 100%;
+      margin-top: 6px;
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    #tutor-booking-table th:nth-child(8),
+    #tutor-booking-table td:nth-child(8) {
+      text-align: center;
+    }
+
+    /* Darker, professional form input borders (GLOBAL) */
+    input,
+    textarea,
+    select {
+      border: 1.5px solid #9aa6c3 !important;   /* darker grey */
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Even clearer when focused (clicked) */
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #0057c8 !important;         /* UTAR blue */
+      box-shadow: 0 0 0 2px rgba(0, 87, 200, 0.12);
+    }
+
+    /* ---------- Layout / Wrappers ---------- */
+    .center-wrapper {
+      min-height: calc(100vh - 84px);
+      display: flex;
+      align-items:flex-start;
+      justify-content: center;
+      padding: 0px 12px 6px;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 10px 16px 0;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 16px 20px;
+      box-shadow: 0 10px 30px rgba(15, 35, 95, 0.08);
+    }
+
+    h1, h2, h3 {
+      color: #0057c8;
+    }
+
+    /* ---------- Shared logo row (login + dashboards) ---------- */
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      text-align: left;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px 0 2px;
+    }
+
+    .utar-logo {
+      height: 85px;
+      width: auto;
+      border-radius: 10px;
+    }
+
+    .logo-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+/* Tutor = blue, Link = yellow (match logo) */
+    .logo-title .logo-tutor {
+      color: #0057c8;   /* blue */
+    }
+    
+    .logo-title .logo-link {
+      color: #f5b400;   /* yellow */
+    }
+
+    .logo-subtitle {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px; 
+    }
+
+    .logo-row-small .utar-logo {
+      height: 95px;
+    }
+
+    .logo-row-small .logo-title {
+      font-size: 22px;
+    }
+
+    .login-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .login-note {
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 8px;
+      line-height: 1.45;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #cfd4e6;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      background: #ffffff;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #0057c8;
+      box-shadow: 0 0 0 2px rgba(0, 87, 200, 0.18);
+    }
+
+    .btn-primary {
+      background: #0057c8;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: #00419a;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #0057c8;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #0057c8;
+      cursor: pointer;
+    }
+
+    .btn-secondary[disabled] {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .btn-secondary:hover:not([disabled]) {
+      background: #e0ecff;
+    }
+
+    .demo-login-text {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #777;
+      text-align: center; 
+      width: 100%;  
+    }
+
+    .login-error {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #c62828;
+    }
+
+    /* Tutor header row: name + points pill */
+    .tutor-header-row {
+      display: flex;
+      align-items: center;  
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tutor-header-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    /* ---------- Navbar ---------- */
+    .navbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      column-gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .navbar-middle {
+      text-align: center;
+    }
+
+    .navbar-user {
+      font-size: 12px;
+      color: #333;
+    }
+
+    .navbar-user-role {
+      font-weight: 600;
+      color: #0057c8;
+      margin-left: 4px;
+    }
+
+    /* For the centred admin text */
+    .admin-center-text {
+      display: inline-block;
+      font-size: 12px;
+    }
+
+    .navbar-right-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #dbe9ff;
+      font-size: 12px;
+      color: #0c3b86;
+      font-weight: 600;
+    }
+
+    .navbar-right-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .support-strip {
+      max-width: 1200px;
+      margin: 18px auto 28px;
+      font-size: 12px;
+      text-align: center;
+      color: #4a5b8a;
+    }
+
+    .support-strip a {
+      font-weight: 600;
+      color: #0057c8;
+    }
+
+    .support-strip a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Section Cards & Tables ---------- */
+
+    .section-card {
+      margin-bottom: 12px;
+      overflow: visible;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      border: 1px solid #b8c0d9;
+    }
+
+    th, td {
+      padding: 9px 10px;
+      text-align: center;
+      border-bottom: 1px solid #b8c0d9;
+      vertical-align: middle;
+    }
+
+    /* Student table: col 7 = "Request details", col 9 = "Status notes" */
+    #student-booking-table th:nth-child(7),
+    #student-booking-table td:nth-child(7) {
+      width: 260px;
+    }
+
+    #student-booking-table th:nth-child(9),
+    #student-booking-table td:nth-child(9) {
+      width: 220px;
+    }
+
+    /* Tutor table: col 7 = "Request details", col 10 = "Student feedback / reason" */
+    #tutor-booking-table th:nth-child(7),
+    #tutor-booking-table td:nth-child(7) {
+      width: 260px;
+    }
+    #tutor-booking-table th:nth-child(10),
+    #tutor-booking-table td:nth-child(10) {
+      width: 230px;
+    }
+
+    th, td {
+      border-right: 1px solid #b8c0d9;
+    }
+
+    th:first-child,
+    td:first-child {
+      border-left: 1px solid #b8c0d9;
+    }
+    table {
+      border: 1px solid #b8c0d9;
+    }
+
+    th {
+      background: #edf1ff;
+      font-weight: 700;
+      color: #333;
+      font-size: 13px;
+    }
+
+    tr:nth-child(even) td {
+      background: #fafbff;
+    }
+
+    .tag-blue {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: #0c3b86;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .status-pending {
+      background: #fff4d6;
+      color: #b27a00;
+    }
+    .status-accepted {
+      background: #e4ffec;
+      color: #13753b;
+    }
+    .status-declined {
+      background: #ffe3e3;
+      color: #c62828;
+    }
+
+    /* ---------- Admin tables: centred like Booking Status ---------- */
+    .admin-table th,
+    .admin-table td {
+      text-align: center;
+    }
+
+    /* ---------- Lecturer / Peer Tutor Cards ---------- */
+
+    .lecturer-course-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .course-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #e0ecff;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0c3b86;
+    }
+
+    .lecturer-course-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #222;
+    }
+
+    .lecturer-meta {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    /* NEW: red fallback message when no peer tutors exist */
+    .no-tutor-message {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #c62828;          /* red text */
+      font-style: italic;
+    }
+
+    .lecturer-card {
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border: 3px solid #3f6cff;
+      box-shadow:
+        0 0 0 0 rgba(63, 108, 255, 0),
+        0 0 18px 6px rgba(63, 108, 255, 0.35);
+      background: #ffffff;
+    }
+
+    .lecturer-name {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 3px;
+      color: #222;
+    }
+
+    .lecturer-line {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .lecturer-line a {
+      font-size: 12px;
+    }
+
+    .lecturer-slot {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-green {
+      background: #e4ffec;
+      color: #13753b;
+    }
+
+    .badge-red {
+      background: #ffe3e3;
+      color: #c62828;
+    }
+
+    /* ---------- Booking Button + Form ---------- */
+
+    .big-button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: none;
+      background: #0057c8;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .big-button:hover {
+      background: #00419a;
+    }
+
+    .booking-form-card {
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px solid #e1e4f0;
+      padding: 14px 18px;
+      background: #f9fbff;
+    }
+
+    /* Ensure there is enough space under the rating dropdown so it opens downward */
+    #rating-form-card {
+      margin-bottom: 140px;
+      padding-bottom: 12px;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px 18px;
+      margin-top: 10px;
+    }
+
+    textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    .booking-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .booking-subtitle {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    /* checkboxes for tutor session types */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .checkbox-group label {
+      font-weight: 400;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ---------- Tutor Dashboard table & profile ---------- */
+
+    .small-note {
+      font-size: 12px;
+      color: #777;
+    }
+
+    .profile-grid {
+      max-width: 520px;
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .readonly-field {
+      font-size: 13px;
+      color: #444;
+    }
+
+    .readonly-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 16px 10px 30px;
+      }
+
+      .navbar {
+        grid-template-columns: 1fr;
+        row-gap: 8px;
+      }
+
+      .navbar-middle {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== TOP UTAR HEADER (ALL SCREENS) ===================== -->
+  <div class="utar-header">
+    <div class="utar-header-inner">
+      <img src="utar-logo2.0.png" alt="UTAR Logo">
+      <div class="utar-header-text">
+        <div class="uni-name">
+          UNIVERSITI TUNKU ABDUL RAHMAN
+          <span style="font-size:12px; font-weight:400;">DU012(A)</span>
+        </div>
+        <div class="sub-text">
+          Wholly owned by UTAR Education Foundation (200201010564(578227-M))
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- centered toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Decline modal -->
+  <div id="decline-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3>Decline booking request</h3>
+      <p>
+        You may provide a short reason for declining this request (optional).
+        The message will be visible to the student.
+      </p>
+      <textarea id="decline-reason-input"
+        placeholder="Example: I am fully booked this week. Please choose another timeslot or tutor."></textarea>
+      <div class="modal-actions">
+        <button id="decline-cancel-btn" type="button" class="btn-secondary">Cancel</button>
+        <button id="decline-confirm-btn" type="button" class="btn-primary" style="width:auto;">
+          Confirm decline
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PART B: HTML STRUCTURE ===================== -->
+
+  <!-- ---------- Screen 1: Login ---------- -->
+  <div id="login-screen" class="center-wrapper">
+    <div class="card login-card">
+    <div class="logo-row">
+      <img src="tutorlink-logo.png" alt="TutorLink logo" class="utar-logo" />
+      <div>
+        <div class="logo-title">
+          <span class="logo-tutor">Tutor</span><span class="logo-link">Link</span>
+        </div>
+        <div class="logo-subtitle">UTAR Open Peer Skills Exchange (OPSE)</div>
+      </div>
+    </div>
+
+      <div class="login-title">Login to TutorLink</div>
+      <div class="login-note">
+        Demo login details (for testing):<br /><br />
+
+        <strong>Student account</strong><br />
+        Tutee 001 → ID: <strong>8000001</strong>, Password: <strong>1234</strong><br /><br />
+
+        <strong>Peer tutor accounts</strong><br />
+        Peer Tutor 001 (English) → ID: <strong>9000001</strong>, Password: <strong>1234</strong><br />
+        Peer Tutor 002 (English) → ID: <strong>9000002</strong>, Password: <strong>1234</strong><br />
+        Peer Tutor 003 (Basic EAM) → ID: <strong>9000003</strong>, Password: <strong>1234</strong><br /><br />
+
+        Log in using your <strong>Student ID</strong> and <strong>Password</strong>.
+      </div>
+
+      <form id="login-form" class="form-grid" onsubmit="return false;">
+        <div>
+          <label for="login-username">Student ID</label>
+          <input id="login-username" type="text" placeholder="8000001" />
+        </div>
+        <div>
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="1234" />
+        </div>
+
+        <!-- NEW: Campus / Programme / Faculty -->
+        <div>
+          <label for="login-campus">UTAR campus</label>
+          <select id="login-campus">
+            <option value="" selected disabled>Select campus</option>
+            <option value="sungai-long">Sungai Long</option>
+            <option value="kampar">Kampar</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="login-programme-type">Programme Type</label>
+          <select id="login-programme-type">
+            <option value="" selected disabled>Select programme type</option>
+            <option value="foundation">Foundation</option>
+            <option value="undergraduate">Undergraduate</option>
+            <option value="postgraduate">Postgraduate</option>
+          </select>
+        </div>
+
+        <div id="login-faculty-wrapper" class="hidden">
+          <label for="login-faculty">Faculty (Undergraduate)</label>
+          <select id="login-faculty">
+            <option value="" selected disabled>Select faculty</option>
+          </select>
+          <p class="small-note" style="margin-top:4px;">
+            Faculty options follow the official UTAR undergraduate faculties for each campus.
+          </p>
+        </div>
+
+        <div>
+          <label for="login-role">Login as</label>
+          <select id="login-role">
+            <option value="" selected disabled>Select login role</option>
+            <option value="student">Student</option>
+            <option value="peer-tutor">Peer Tutor</option>
+            <option value="admin">System Admin</option>
+          </select>
+        </div>
+        <button id="login-btn" type="button" class="btn-primary">Login</button>
+        <div id="login-error" class="login-error hidden"></div>
+      </form>
+
+      <div class="demo-login-text">
+        Need assistance?
+        <a href="mailto:tutorlink.support@gmail.com">
+          Contact Support
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- Screen 2: Main App ---------- -->
+  <div id="main-screen" class="page hidden">
+
+    <!-- Navbar (all dashboards – same logo row) -->
+    <header class="navbar">
+      <div class="logo-row logo-row-small">
+        <img src="tutorlink-logo.png" alt="TutorLink Logo" class="utar-logo" />
+        <div>
+          <div class="logo-title">
+            <span class="logo-tutor">Tutor</span><span class="logo-link">Link</span>
+          </div>
+          <div class="logo-subtitle">UTAR Open Peer Skills Exchange (OPSE)</div>
+        </div>
+      </div>
+
+      <div class="navbar-middle">
+        <div id="user-banner" class="navbar-user"></div>
+        <div id="trimester-label" class="small-note" style="margin-top:2px;">
+          October/November 2025 Trimester
+        </div>
+      </div>
+
+      <div class="navbar-right-group">
+        <div class="navbar-right-pill" id="campus-pill">
+          UTAR · Sungai Long · LKC FES
+        </div>
+        <button id="logout-btn" type="button" class="btn-secondary">Sign out</button>
+      </div>
+    </header>
+
+    <!-- ========== STUDENT DASHBOARD (when login as Student) ========== -->
+    <div id="student-dashboard">
+
+      <!-- ===== Section 1: Peer Tutoring Booking ===== -->
+      <section class="card section-card">
+        <h2 class="section-title">1. Peer Tutoring Session Booking</h2>
+        <p class="section-subtitle">
+          Submit a peer tutoring request by selecting a registered course, academic task, session mode, preferred tutor and available timeslot.
+        </p>
+        <p style="font-size:13px; margin-bottom: 8px;">
+          Click the button below to proceed with your booking.
+        </p>
+
+        <button id="show-booking-form" class="big-button">
+          Book Peer Tutoring Session
+        </button>
+
+        <div id="booking-form-wrapper" class="booking-form-card hidden">
+          <h3 style="font-size:18px; color:#222; margin-bottom:4px;">
+            Book a Peer Tutoring Session
+          </h3>
+          <p class="booking-subtitle">
+            Please select a course, academic task, preferred tutor, session mode and available timeslot.
+          </p>
+
+          <div class="booking-grid">
+            <!-- Course -->
+            <div>
+              <label for="bk-course">Course</label>
+              <select id="bk-course">
+                <option value="" selected disabled>Select course</option>
+                <option value="mpu32193">MPU32193 - English for Professional Communications</option>
+                <option value="ukmm1043">UKMM1043 - Basic Economics, Accounting and Management</option>
+              </select>
+            </div>
+
+            <!-- Academic task (single select, next to Course) -->
+            <div>
+              <label for="bk-task">Academic task</label>
+              <select id="bk-task" disabled>
+                <option value="" selected disabled>Select academic task</option>
+                <option value="Lecture Content">Lecture Content</option>
+                <option value="Tutorial Questions">Tutorial Questions</option>
+                <option value="Lab Reports">Lab Reports</option>
+                <option value="Quizzes">Quizzes</option>
+                <option value="Midterm Tests">Midterm Tests</option>
+                <option value="Assignments">Assignments</option>
+                <option value="Past Year Questions (PYQ)">Past Year Questions (PYQ)</option>
+                <option value="Final Year Project (FYP)">Final Year Project (FYP)</option>
+              </select>
+            </div>
+
+            <!-- Preferred Tutor (enabled after academic task) -->
+            <div>
+              <label for="bk-lecturer">Preferred Peer Tutor</label>
+              <select id="bk-lecturer" disabled>
+                <option value="" selected disabled>Select peer tutor</option>
+              </select>
+            </div>
+
+            <!-- Session Mode (enabled after tutor, modes from tutor profile) -->
+            <div>
+              <label for="bk-mode">Session Mode</label>
+              <select id="bk-mode" disabled>
+                <option value="" selected disabled>Select session</option>
+              </select>
+            </div>
+
+            <!-- Preferred Timeslot (enabled after session mode) -->
+            <div>
+              <label for="bk-timeslot">Preferred Timeslot</label>
+              <select id="bk-timeslot" disabled>
+                <option value="" selected disabled>Select timeslot</option>
+              </select>
+            </div>
+
+            <!-- Notes -->
+            <div style="grid-column: 1 / -1;">
+              <label for="bk-notes">Topic / Question Details</label>
+              <textarea
+                id="bk-notes"
+                placeholder="Briefly describe your question or the topic that you need help with."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="booking-actions">
+            <button id="submit-booking-btn" class="btn-primary" type="button" style="width:auto;">
+              Submit Peer Tutoring Request
+            </button>
+            <button id="hide-booking-form" class="btn-secondary" type="button">
+              Cancel
+            </button>
+          </div>
+
+          <p style="font-size:11px; color:#777; margin-top:8px;">
+            Your request will be displayed on the selected peer tutor’s dashboard.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===== Section 2: Registered Courses ===== -->
+      <section class="card section-card">
+        <h2 class="section-title">2. Registered Courses for Peer Tutoring</h2>
+        <p class="section-subtitle">
+          Select a registered course to view available peer tutors and consultation hours.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 40px;">No</th>
+              <th style="width: 110px;">Course</th>
+              <th>Description</th>
+              <th style="width: 120px;">Paper Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><a href="#" class="course-link" data-course="mpu32193">MPU32193</a></td>
+              <td>ENGLISH FOR PROFESSIONAL COMMUNICATIONS</td>
+              <td><span class="tag-blue">Main Paper</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><a href="#" class="course-link" data-course="ukmm1043">UKMM1043</a></td>
+              <td>BASIC ECONOMICS, ACCOUNTING AND MANAGEMENT</td>
+              <td><span class="tag-blue">Main Paper</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== Section 2.1: Peer Tutor Availability (linked to peers) ===== -->
+      <section id="lecturer-section" class="card section-card hidden">
+        <h2 class="section-title">
+          2.1 Peer Tutor Availability
+        </h2>
+        <p class="section-subtitle">
+          This section shows the available peer tutors and their consultation hours for the selected course.
+        </p>
+
+        <!-- MPU32193 peer tutors -->
+        <div class="course-lecturers" data-course-detail="mpu32193">
+          <div class="lecturer-course-header">
+            <div>
+              <div class="lecturer-course-name">
+                MPU32193 - English for Professional Communications
+              </div>
+              <div class="lecturer-meta">
+                Peer tutors specialising in English for Professional Communications.
+              </div>
+            </div>
+            <span class="course-pill">Main Paper</span>
+          </div>
+
+          <!-- Container for English peer tutors + fallback message -->
+          <div class="peer-card-container" data-course="mpu32193">
+            <div class="no-tutor-message hidden">
+              <strong>No peer tutors are currently available for this course.</strong><br>
+              <span>Please check again later, sorry for the inconvenience.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- UKMM1043 peer tutors -->
+        <div class="course-lecturers hidden" data-course-detail="ukmm1043">
+          <div class="lecturer-course-header">
+            <div>
+              <div class="lecturer-course-name">
+                UKMM1043 - Basic Economics, Accounting and Management
+              </div>
+              <div class="lecturer-meta">
+                Peer tutors specialising in basic economics, accounting and management.
+              </div>
+            </div>
+            <span class="course-pill">Main Paper</span>
+          </div>
+
+          <!-- Container for Economics peer tutors + fallback message -->
+          <div class="peer-card-container" data-course="ukmm1043">
+            <div class="no-tutor-message hidden">
+              <strong>No peer tutors are currently available for this course.</strong><br>
+              <span>Please check again later, sorry for the inconvenience.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Section 3: Booking Status & Feedback ===== -->
+      <section class="card section-card">
+        <h2 class="section-title">3. Booking Status &amp; Feedback</h2>
+        <p class="section-subtitle">
+          View the status of your peer tutoring requests and access your session feedback and rating history.
+        </p>
+
+        <table id="student-booking-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">No</th>
+              <th style="width:140px;">Course</th>
+              <th style="width:150px;">Academic task</th>
+              <th style="width:150px;">Tutor</th>
+              <th style="width:90px;">Mode</th>
+              <th style="width:150px;">Timeslot</th>
+              <th>Request details</th>
+              <th style="width:110px;">Status</th>
+              <th style="width:160px;">Status notes</th>
+              <th style="width:90px;">Rating</th>
+            </tr>
+          </thead>
+          <tbody id="student-booking-status-tbody"></tbody>
+        </table>
+
+        <!-- Rating form (appears when student clicks "Rate now") -->
+        <div id="rating-form-card" class="booking-form-card hidden">
+          <h3 style="font-size:16px; color:#222; margin-bottom:4px;">
+            Rate Your Peer Tutor
+          </h3>
+          <p class="booking-subtitle" id="rating-form-subtitle">
+            Please rate your recent session.
+          </p>
+          <div class="booking-grid">
+            <div>
+              <label for="rating-score">Rating (1-10)</label>
+              <select id="rating-score">
+                <option value="" selected disabled>Select rating</option>
+                <option value="1">1 - Very poor</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 - Average</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10 - Excellent</option>
+              </select>
+            </div>
+            <div style="grid-column:1/-1;">
+              <label for="rating-comment">Comments for your tutor (optional)</label>
+              <textarea id="rating-comment"
+                placeholder="Example: Very clear explanation, patient and helpful."></textarea>
+            </div>
+          </div>
+          <div class="booking-actions">
+            <button id="rating-submit-btn" class="btn-primary" type="button" style="width:auto;">
+              Submit Rating
+            </button>
+            <button id="rating-cancel-btn" class="btn-secondary" type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student support strip -->
+      <div class="support-strip">
+        Need assistance?
+        <a href="mailto:tutorlink.support@gmail.com">
+          Contact Support
+        </a>
+      </div>
+    </div> <!-- end student-dashboard -->
+
+    <!-- ========== TUTOR DASHBOARD (when login as Peer Tutor) ========== -->
+    <div id="tutor-dashboard" class="hidden">
+
+      <!-- 1. Peer Tutor Profile & Consultation Hours -->
+      <section class="card section-card">
+
+        <!-- 1. TITLE & HEADER -->
+        <h2 class="section-title">1. My Peer Tutor Profile &amp; Consultation Hours</h2>
+
+        <!-- Name + Points aligned in one row -->
+        <div class="tutor-header-row">
+          <div id="tutor-profile-header" class="tutor-header-name">
+            <!-- Filled by JS -->
+          </div>
+
+          <div id="tutor-points-display" class="navbar-right-pill">
+            TutorLink Points: 0 pts
+          </div>
+        </div>
+
+        <!-- 2. READ-ONLY INFO (no grey lines) -->
+        <div style="margin-bottom:14px; margin-top:4px;">
+          <div class="readonly-label">Tutoring Subject</div>
+          <div id="tp-course" class="readonly-field"></div>
+
+          <div style="height:8px;"></div>
+
+          <div class="readonly-label">Year / Programme</div>
+          <div id="tp-programme" class="readonly-field"></div>
+        </div>
+
+        <!-- 3. MESSAGE BEFORE EDITABLE FIELDS -->
+        <p class="section-subtitle" style="margin-bottom:14px;">
+          You may update your contact details and consultation hours below.
+        </p>
+
+        <!-- 4. EDITABLE FIELDS -->
+        <div id="tutor-profile-wrapper" class="profile-grid">
+
+          <div>
+            <label for="tp-email">Email</label>
+            <input id="tp-email" type="text" />
+          </div>
+
+          <div>
+            <label for="tp-phone">Phone number</label>
+            <input id="tp-phone" type="text" />
+          </div>
+
+          <div style="grid-column:1/-1;">
+            <label for="tp-slots">Consultation hours (one line per timeslot)</label>
+            <textarea
+              id="tp-slots"
+              placeholder="Example: Monday 10:00 AM - 3:00 PM&#10;Wednesday 12:00 PM - 5:00 PM"
+            ></textarea>
+          </div>
+
+        </div>
+
+        <!-- 5. SESSION TYPES & BUTTON (no line in between) -->
+        <div style="margin-top:14px;">
+
+          <label>Session types you offer</label>
+          <div class="checkbox-group" style="margin-bottom:6px;">
+            <label>
+              <input type="checkbox" class="tp-mode" value="1-on-1 Session" />
+              1-to-1 session
+            </label>
+            <label>
+              <input type="checkbox" class="tp-mode" value="Small group (2-4 students)" />
+              Small group (2-4 students)
+            </label>
+            <label>
+              <input type="checkbox" class="tp-mode" value="Large group (5-7 students)" />
+              Large group (5-7 students)
+            </label>
+          </div>
+
+          <p class="small-note" style="margin-bottom:10px;">
+            Maximum of 7 students per large group session.
+          </p>
+
+          <button id="tp-save" type="button" class="btn-primary" style="width:auto;">
+            Save profile &amp; refresh student view
+          </button>
+
+        </div>
+
+        <!-- Only shown if profile cannot load -->
+        <p id="tutor-profile-empty" class="small-note hidden">
+          Your profile will load automatically based on your TutorLink login.
+        </p>
+
+      </section>
+
+      <!-- 2. Incoming Booking Requests -->
+      <section class="card section-card">
+        <h2 class="section-title">2. Incoming Booking Requests</h2>
+        <p class="section-subtitle">
+          Review booking requests from students, accept or decline them, and view their feedback.
+        </p>
+
+        <div id="tutor-booking-empty" class="small-note">
+          No peer tutoring bookings yet for this tutor.
+        </div>
+
+        <table id="tutor-booking-table" class="hidden" style="margin-top:12px;">
+          <thead>
+            <tr>
+              <th style="width:40px;">No</th>
+              <th style="width:160px;">Student</th>
+              <th>Course</th>
+              <th style="width:160px;">Academic task</th>
+              <th style="width:100px;">Mode</th>
+              <th style="width:140px;">Timeslot</th>
+              <th>Request details</th>
+              <th style="width:160px;">Status / actions</th>
+              <th style="width:70px;">Rating</th>
+              <th>Student feedback / reason</th>
+            </tr>
+          </thead>
+          <tbody id="tutor-booking-tbody"></tbody>
+        </table>
+      </section>
+
+      <!-- Peer tutor support strip -->
+      <div class="support-strip">
+        Need assistance?
+        <a href="mailto:tutorlink.support@gmail.com">
+          Contact Support
+        </a>
+      </div>
+    </div> <!-- end tutor-dashboard -->
+
+    <!-- ========== ADMIN DASHBOARD (when login as Admin) ========== -->
+    <div id="admin-dashboard" class="hidden">
+
+      <!-- Manage students -->
+      <section class="card section-card">
+        <h2 class="section-title">1. Manage Student Accounts</h2>
+        <p class="section-subtitle">
+          Create, update, or remove student accounts for TutorLink.
+        </p>
+
+        <div class="form-grid" style="max-width:520px; margin-bottom:12px;">
+          <div>
+            <label for="adm-stu-name">Student Name</label>
+            <input id="adm-stu-name" type="text" placeholder="Tutee 001" />
+          </div>
+          <div>
+            <label for="adm-stu-id">Student ID (login ID)</label>
+            <input id="adm-stu-id" type="text" placeholder="8000001" />
+          </div>
+          <div>
+            <label for="adm-stu-email">Email</label>
+            <input id="adm-stu-email" type="text" placeholder="tutee001@1utar.my" />
+          </div>
+          <div>
+            <label for="adm-stu-password">Login Password</label>
+            <input id="adm-stu-password" type="text" placeholder="1234" />
+          </div>
+          <button id="adm-add-student" type="button" class="btn-primary" style="width:auto;">
+            Add / Update Student
+          </button>
+        </div>
+
+        <p class="small-note" style="margin-bottom:6px;">
+          Existing student accounts:
+        </p>
+        <table class="admin-table admin-student-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">No</th>
+              <th style="width:220px;">Student Name</th>
+              <th style="width:120px;">Student ID (login ID)</th>
+              <th style="width:300px;">Email</th>
+              <th style="width:130px;">Login Password</th>
+              <th style="width:90px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adm-stu-tbody"></tbody>
+        </table>
+      </section>
+
+      <!-- Manage peer tutors -->
+      <section class="card section-card">
+        <h2 class="section-title">2. Manage Peer Tutor Accounts</h2>
+        <p class="section-subtitle">
+          Create, update, or manage peer tutor accounts for TutorLink.
+        </p>
+
+        <div class="form-grid" style="max-width:700px; margin-bottom:12px;">
+          <div>
+            <label for="adm-tutor-name">Tutor Name</label>
+            <input id="adm-tutor-name" type="text" placeholder="Peer Tutor 001" />
+          </div>
+          <div>
+            <label for="adm-tutor-stu-id">Student ID (login ID)</label>
+            <input id="adm-tutor-stu-id" type="text" placeholder="9000001" />
+          </div>
+          <div>
+            <label for="adm-tutor-year">Year of Study</label>
+            <select id="adm-tutor-year">
+              <option value="" selected disabled>Select year</option>
+              <option value="Year 2">Year 2</option>
+              <option value="Year 3">Year 3</option>
+              <option value="Year 4">Year 4</option>
+            </select>
+          </div>
+          <div>
+            <label for="adm-tutor-programme">Programme of Study</label>
+            <input id="adm-tutor-programme" type="text" placeholder="Bachelor of Engineering (Honours) Biomedical Engineering" />
+            <p class="small-note">
+              Peer tutor’s current programme of study.
+            </p>
+          </div>
+          <div>
+            <label for="adm-tutor-course">Course</label>
+            <input
+              id="adm-tutor-course"
+              type="text"
+              list="course-suggestions"
+              placeholder="MPU32193 - English for Professional Communications"
+            />
+            <datalist id="course-suggestions">
+              <option value="MPU32193 - English for Professional Communications"></option>
+              <option value="UKMM1043 - Basic Economics, Accounting and Management"></option>
+            </datalist>
+            <p class="small-note">
+              Select a course from the list or type another course if needed.
+            </p>
+          </div>
+          <div>
+            <label for="adm-tutor-email">Email</label>
+            <input id="adm-tutor-email" type="text" placeholder="9000001@1utar.my" />
+          </div>
+          <div>
+            <label for="adm-tutor-phone">Phone</label>
+            <input id="adm-tutor-phone" type="text" placeholder="01X XXX XXX" />
+          </div>
+          <div>
+            <label for="adm-tutor-password">Login Password</label>
+            <input id="adm-tutor-password" type="text" placeholder="1234" />
+          </div>
+
+          <button id="adm-add-tutor" type="button" class="btn-primary" style="width:auto;">
+            Add / Update Tutor
+          </button>
+        </div>
+
+        <p class="small-note" style="margin-bottom:6px;">
+          Existing peer tutor accounts:
+        </p>
+        <table class="admin-table admin-tutor-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">No</th>
+              <th style="width:160px;">Tutor Name</th>
+              <th style="width:120px;">Student ID (login ID)</th>
+              <th style="width:90px;">Year</th>
+              <th style="width:230px;">Programme of Study</th>
+              <th style="width:220px;">Course</th>
+              <th style="width:220px;">Email</th>
+              <th style="width:120px;">Phone</th>
+              <th style="width:120px;">Login Password</th>
+              <th style="width:60px;">Points</th>
+              <th style="width:160px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adm-tutor-tbody"></tbody>
+        </table>
+      </section>
+
+      <!-- Admin support strip -->
+      <div class="support-strip">
+        Need assistance?
+        <a href="mailto:tutorlink.support@gmail.com">
+          Contact Support
+        </a>
+      </div>
+    </div> <!-- end admin-dashboard -->
+
+  </div> <!-- end main-screen -->
+
+  <!-- ===================== PART C: JAVASCRIPT LOGIC ===================== -->
+  <script>
+    // ---------- DATA SETUP & STORAGE HELPERS ----------
+    const STORAGE_KEYS = {
+      students: "tutorlink_students_v1",
+      peerTutors: "tutorlink_peer_tutors_v1",
+      bookings: "tutorlink_bookings_v1"
+    };
+
+    const courses = {
+      mpu32193: "MPU32193 - English for Professional Communications",
+      ukmm1043: "UKMM1043 - Basic Economics, Accounting and Management"
+    };
+
+    // Default student account (you as example)
+    const defaultStudents = [
+      {
+        studentId: "8000001",
+        password: "1234",
+        name: "Tutee 001",
+        email: "tutee001@1utar.my"
+      }
+    ];
+
+    // Admin account (fixed, uses "admin" as login ID)
+    const adminAccount = {
+      username: "admin",
+      password: "1234",
+      name: "TutorLink System Administrator",
+      email: "tutorlink-admin@utar.my"
+    };
+
+    // Default peer tutors – now empty so admin can add any peers they want
+    const defaultPeerTutors = [
+       {
+        id: "t9000001",
+        name: "Peer Tutor 001",   
+        studentId: "9000001",
+        yearLabel: "Year 3",
+        programme: "Bachelor of Engineering (Honours) Civil Engineering",
+        courseKey: "mpu32193",
+        courseLabel: courses.mpu32193,
+        email: "peertutor001@1utar.my",
+        phone: "012 325 6322",
+        slots: [
+          "Monday 10:00 AM - 12:00 PM",
+          "Wednesday 2:00 PM - 4:00 PM"
+        ],
+        sessionModes: [
+          "1-on-1 Session",
+          "Small group (2-4 students)",
+          "Large group (5-7 students)"
+        ],
+        points: 0,
+        password: "1234"
+      },
+
+      // ECONOMICS – Peer Tutor 003 (from 2nd screenshot)
+      {
+        id: "t9000003",
+        name: "Peer Tutor 003",
+        studentId: "9000003",
+        yearLabel: "Year 4",
+        programme: "Bachelor of Engineering (Honours) Chemical Engineering",
+        courseKey: "ukmm1043",
+        courseLabel: courses.ukmm1043,
+        email: "peertutor003@1utar.my",
+        phone: "012 345 6767",
+        slots: [
+          "Monday 4:30 PM - 6:30 PM",
+          "Thursday 12:00 PM - 2:00 PM"
+        ],
+        sessionModes: [
+          "1-on-1 Session",
+          "Small group (2-4 students)",
+        ],
+        points: 0,
+        password: "1234"
+      }, 
+  // ENGLISH – Peer Tutor 002 (from 1st screenshot)
+      {
+        id: "t9000002",
+        name: "Peer Tutor 002",
+        studentId: "9000002",
+        yearLabel: "Year 2",
+        programme: "Bachelor of Engineering (Honours) Civil Engineering",
+        courseKey: "mpu32193",
+        courseLabel: courses.mpu32193,
+        email: "peertutor003@gmail.com",
+        phone: "012 784 5343",
+        slots: [
+          "Tuesday 9:00 AM - 11:00 AM",
+          "Friday 3:30 PM - 5:30 PM"
+        ],
+        sessionModes: [
+          "1-on-1 Session",
+        ],
+        points: 0,
+        password: "1234"
+       }
+     ];
+
+    let students = [];
+    let peerTutors = [];
+    let bookings = [];
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEYS.students, JSON.stringify(students));
+      localStorage.setItem(STORAGE_KEYS.peerTutors, JSON.stringify(peerTutors));
+      localStorage.setItem(STORAGE_KEYS.bookings, JSON.stringify(bookings));
+    }
+
+    function loadState() {
+      const s = localStorage.getItem(STORAGE_KEYS.students);
+      const p = localStorage.getItem(STORAGE_KEYS.peerTutors);
+      const b = localStorage.getItem(STORAGE_KEYS.bookings);
+
+      students = s ? JSON.parse(s) : JSON.parse(JSON.stringify(defaultStudents));
+      peerTutors = p ? JSON.parse(p) : JSON.parse(JSON.stringify(defaultPeerTutors));
+      bookings   = b ? JSON.parse(b) : [];
+
+      // Migration / safety: ensure studentId exists
+      students.forEach(st => {
+        if (!st.studentId && st.username) {
+          st.studentId = st.username;
+        }
+      });
+
+      // Ensure new fields exist if coming from older saves
+      peerTutors.forEach(t => {
+        if (!t.studentId && t.username) {
+          t.studentId = t.username;
+        }
+        if (t.points == null) t.points = 0;
+        if (!t.courseLabel && t.courseKey) {
+          t.courseLabel = courses[t.courseKey] || t.courseKey.toUpperCase();
+        }
+        if (!t.sessionModes) {
+          t.sessionModes = ["1-on-1 Session", "Small group (2-4 students)", "Large group (5-7 students)"];
+        }
+      });
+    }
+
+    // Utility
+    function getDisplayName(t) {
+      return `${t.name} (${t.yearLabel || ""})`.trim();
+    }
+
+    function getAcademicTaskText(b) {
+      if (b.academicTask) return b.academicTask;
+      if (b.tasks && b.tasks.length) return b.tasks.join(", ");
+      return "-";
+    }
+
+    // Derive a courseKey from free text (e.g. "MPU32193 - English ..." -> "mpu32193")
+    function deriveCourseKey(raw) {
+      if (!raw) return "";
+      if (/^mpu32193/i.test(raw)) return "mpu32193";
+      if (/^ukmm1043/i.test(raw)) return "ukmm1043";
+
+      let part = raw.split("-")[0].trim();
+      if (!part) part = raw.trim();
+      return part.toLowerCase().replace(/\s+/g, "");
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      console.log("TutorLink JS loaded");
+
+      loadState(); // load students + peerTutors from storage or defaults
+
+      // store demo bookings in-memory (not persisted, only visual)
+      let currentUserId = null;        // login ID (studentId or "admin")
+      let currentRole = null;
+      let currentUserProfile = null;   // full object for banner
+      let currentRatingBookingId = null;
+      let currentDeclineBookingId = null;
+
+      // ===== Toast helper =====
+      const toastEl = document.getElementById("toast");
+      let toastTimeout = null;
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.remove("hidden");
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toastEl.classList.add("hidden");
+        }, 3500);
+      }
+
+      // bookingData derived from peerTutors (for student booking dropdowns)
+      // Structure: bookingData[courseKey][tutorDisplayName] = { slots: [...], modes: [...] }
+      let bookingData = {};
+      function rebuildBookingData() {
+        bookingData = {};
+        peerTutors.forEach(t => {
+          if (!t.courseKey) return;
+          const courseKey = t.courseKey;
+          if (!bookingData[courseKey]) bookingData[courseKey] = {};
+          const displayName = getDisplayName(t);
+          bookingData[courseKey][displayName] = {
+            slots: (t.slots && t.slots.length ? t.slots.slice() : ["No available time slot"]),
+            modes: (t.sessionModes && t.sessionModes.length ? t.sessionModes.slice() : [])
+          };
+        });
+      }
+
+      // ===== render Section 2.1 cards from peerTutors =====
+      function renderPeerTutorCards() {
+        const containers = document.querySelectorAll(".peer-card-container");
+
+        // 1. Clear old tutor cards but keep the red message
+        containers.forEach(c => {
+          const msg = c.querySelector(".no-tutor-message");
+
+          // remove all children except the message
+          Array.from(c.children).forEach(child => {
+            if (!child.classList.contains("no-tutor-message")) {
+              child.remove();
+            }
+          });
+
+          // show message by default (will hide if tutors exist)
+          if (msg) {
+            msg.classList.remove("hidden");
+          }
+        });
+
+        // 2. Add tutor cards; hide message if at least one tutor for that course
+        peerTutors.forEach(t => {
+          const container = document.querySelector(
+            `.peer-card-container[data-course="${t.courseKey}"]`
+          );
+          if (!container) return;
+
+          const msg = container.querySelector(".no-tutor-message");
+          if (msg) {
+            msg.classList.add("hidden"); // at least one tutor exists → hide message
+          }
+
+          const card = document.createElement("div");
+          card.className = "lecturer-card";
+
+          const hasSlots = t.slots && t.slots.length > 0;
+          const courseLabel =
+            t.courseLabel || courses[t.courseKey] || (t.courseKey || "").toUpperCase();
+
+          // Consultation hours block
+          let slotsHtml = "";
+          if (hasSlots) {
+            slotsHtml += `
+              <div class="lecturer-slot">
+                <span class="badge-status badge-green">Consultation Hours</span>
+              </div>
+            `;
+            t.slots.forEach(s => {
+              const day = s.split(" ")[0].replace(":", "");
+              const timeText = s.substring(day.length + 1);
+
+              slotsHtml += `
+                <div class="lecturer-slot">
+                  <span class="slot-day">${day}:</span>
+                  <span class="slot-time">${timeText}</span>
+                </div>
+              `;
+            });
+          } else {
+            slotsHtml += `
+              <div class="lecturer-slot">
+                <span class="badge-status badge-red">No available time slot</span>
+              </div>
+              <div class="lecturer-slot" style="margin-top:4px; color:#b60000; font-style:italic;">
+                Consultation hours have not been set yet.
+              </div>
+            `;
+          }
+
+          // Session types offered
+          let modesHtml = "";
+          if (t.sessionModes && t.sessionModes.length) {
+            const pills = t.sessionModes
+              .map(m => `<span class="mode-pill">${m}</span>`)
+              .join(" ");
+
+            modesHtml = `
+              <div class="lecturer-line" style="margin-top:8px;">
+                <strong>Session types offered:</strong>
+                <div class="mode-pill-group">${pills}</div>
+              </div>
+            `;
+          }
+
+          // Clean 2-line profile (Year/Programme + Tutoring Subject COURSE)
+          const yearText = t.yearLabel || "";
+          const programmeText = t.programme || "";
+          let programmeLine = "";
+          if (yearText && programmeText) {
+            programmeLine = `${yearText} - ${programmeText}`;
+          } else {
+            programmeLine = yearText || programmeText || "";
+          }
+
+          card.innerHTML = `
+            <div class="lecturer-name">${t.name}</div>
+            <div class="lecturer-line">
+              <strong>Year / Programme:</strong> ${programmeLine}
+            </div>
+            <div class="lecturer-line">
+              <strong>Tutoring Subject:</strong> ${courseLabel}
+            </div>
+            <div class="lecturer-line">
+              <strong>Email:</strong> <a href="mailto:${t.email}">${t.email}</a>
+            </div>
+            <div class="lecturer-line">
+              <strong>Phone:</strong> ${t.phone || "-"}</div>
+            ${modesHtml}
+            ${slotsHtml}
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      rebuildBookingData();
+      renderPeerTutorCards();
+
+      /* ---------- Login / Logout ---------- */
+
+      const loginForm      = document.getElementById("login-form");
+      const loginScreen    = document.getElementById("login-screen");
+      const mainScreen     = document.getElementById("main-screen");
+      const loginUsername  = document.getElementById("login-username");
+      const loginPassword  = document.getElementById("login-password");
+      const loginRole      = document.getElementById("login-role");
+      const loginError     = document.getElementById("login-error");
+      const loginBtn       = document.getElementById("login-btn");
+
+      const loginCampus         = document.getElementById("login-campus");
+      const loginProgrammeType  = document.getElementById("login-programme-type");
+      const loginFacultyWrapper = document.getElementById("login-faculty-wrapper");
+      const loginFaculty        = document.getElementById("login-faculty");
+
+      const studentDashboard = document.getElementById("student-dashboard");
+      const tutorDashboard   = document.getElementById("tutor-dashboard");
+      const adminDashboard   = document.getElementById("admin-dashboard");
+      const userBanner       = document.getElementById("user-banner");
+      const campusPill       = document.getElementById("campus-pill");
+
+      // Decline modal elements
+      const declineModal       = document.getElementById("decline-modal");
+      const declineReasonInput = document.getElementById("decline-reason-input");
+      const declineCancelBtn   = document.getElementById("decline-cancel-btn");
+      const declineConfirmBtn  = document.getElementById("decline-confirm-btn");
+
+      // Faculty options per campus
+      const facultyOptions = {
+        "sungai-long": [
+          { value: "FAM", label: "FAM" },
+          { value: "FCI", label: "FCI" },
+          { value: "FEd_SL", label: "FEd" },
+          { value: "LKC FES", label: "LKC FES" },
+          { value: "MK FMHS", label: "MK FMHS" }
+        ],
+        "kampar": [
+          { value: "FAS", label: "FAS" },
+          { value: "FEd_K", label: "FEd" },
+          { value: "THP", label: "THP" },
+          { value: "FBF", label: "FBF" },
+          { value: "FEGT", label: "FEGT" },
+          { value: "FICT", label: "FICT" },
+          { value: "FSc", label: "FSc" },
+          { value: "FCS", label: "FCS" }
+        ]
+      };
+
+      function refreshFacultyOptions() {
+        const campus = loginCampus.value;
+        const prog   = loginProgrammeType.value;
+
+        if (prog === "undergraduate") {
+          loginFacultyWrapper.classList.remove("hidden");
+          loginFaculty.innerHTML = '<option value="" selected disabled>Select faculty</option>';
+          const list = facultyOptions[campus] || [];
+          list.forEach(f => {
+            const opt = document.createElement("option");
+            opt.value = f.value;
+            opt.textContent = f.label;
+            loginFaculty.appendChild(opt);
+          });
+        } else {
+          loginFacultyWrapper.classList.add("hidden");
+          loginFaculty.value = "";
+        }
+      }
+
+      loginCampus.addEventListener("change", refreshFacultyOptions);
+      loginProgrammeType.addEventListener("change", refreshFacultyOptions);
+
+      function updateUserBanner() {
+        if (!currentUserProfile || !currentRole) {
+          userBanner.textContent = "";
+          return;
+        }
+
+        // CLEAN, CENTERED ADMIN BANNER
+        if (currentRole === "admin") {
+          userBanner.innerHTML = `
+            <span class="navbar-user-role admin-center-text">
+              TutorLink System Administrator
+            </span>
+          `;
+          return;
+        }
+
+        // Default layout for student + peer tutor
+        let roleLabel = "";
+        if (currentRole === "student") roleLabel = "Student";
+        else if (currentRole === "peer-tutor") roleLabel = "Peer Tutor";
+
+        const name = currentUserProfile.name || "";
+        const sid = currentUserProfile.studentId ? ` (${currentUserProfile.studentId})` : "";
+        const email = currentUserProfile.email ? ` ${currentUserProfile.email}` : "";
+
+        userBanner.innerHTML = `
+          ${name}${sid}${email}
+          <span class="navbar-user-role">· ${roleLabel}</span>
+        `;
+      }
+
+      function findStudentById(id) {
+        return students.find(s => s.studentId === id) || null;
+      }
+      function findTutorById(id) {
+        return peerTutors.find(t => t.studentId === id) || null;
+      }
+
+      loginBtn.addEventListener("click", function () {
+        const loginId = loginUsername.value.trim();
+        const password = loginPassword.value.trim();
+        const role     = loginRole.value;
+
+        loginError.classList.add("hidden");
+
+        const campus   = loginCampus.value;
+        const progType = loginProgrammeType.value;
+        const faculty  = loginFaculty.value;
+
+        if (!role) {
+          loginError.textContent = "Please choose whether you are logging in as Student, Peer Tutor or System Admin.";
+          loginError.classList.remove("hidden");
+          return;
+        }
+
+        if (!loginId || !password) {
+          loginError.textContent = "Please enter both Student ID (or admin ID) and password.";
+          loginError.classList.remove("hidden");
+          return;
+        }
+
+        // Campus / programme validation (only for student & tutor)
+        if (role !== "admin") {
+          if (!campus || !progType) {
+            loginError.textContent = "Please select your UTAR campus and programme type.";
+            loginError.classList.remove("hidden");
+            return;
+          }
+
+          if (progType === "undergraduate" && !faculty) {
+            loginError.textContent = "Please select your undergraduate faculty.";
+            loginError.classList.remove("hidden");
+            return;
+          }
+
+          const allowed =
+            campus === "sungai-long" &&
+            progType === "undergraduate" &&
+            faculty === "LKC FES";
+
+          if (!allowed) {
+            loginError.textContent =
+              "For this prototype, TutorLink is currently available only for UTAR Sungai Long - Undergraduate - LKC FES students. Other campuses, programmes and faculties are not yet enabled.";
+            loginError.classList.remove("hidden");
+            return;
+          }
+        }
+
+        let account = null;
+
+        if (role === "admin") {
+          if (loginId === adminAccount.username && password === adminAccount.password) {
+            account = adminAccount;
+          }
+        } else if (role === "student") {
+          const st = findStudentById(loginId);
+          if (st && st.password === password) account = st;
+        } else if (role === "peer-tutor") {
+          const tt = findTutorById(loginId);
+          if (tt && tt.password === password) account = tt;
+        }
+
+        if (!account) {
+          loginError.textContent =
+            "Invalid Student ID / password for the selected role.";
+          loginError.classList.remove("hidden");
+          return;
+        }
+
+        // success
+        loginError.classList.add("hidden");
+        loginScreen.classList.add("hidden");
+        mainScreen.classList.remove("hidden");
+        window.scrollTo(0, 0);
+
+        currentUserId = loginId;
+        currentRole   = role;
+        currentUserProfile = account;
+        updateUserBanner();
+
+        campusPill.textContent = "UTAR · Sungai Long · LKC FES";
+
+        if (role === "student") {
+          studentDashboard.classList.remove("hidden");
+          tutorDashboard.classList.add("hidden");
+          adminDashboard.classList.add("hidden");
+          renderStudentBookingStatus();
+        } else if (role === "peer-tutor") {
+          tutorDashboard.classList.remove("hidden");
+          studentDashboard.classList.add("hidden");
+          adminDashboard.classList.add("hidden");
+          fillCurrentTutorProfile();
+          renderTutorBookings();
+        } else if (role === "admin") {
+          adminDashboard.classList.remove("hidden");
+          studentDashboard.classList.add("hidden");
+          tutorDashboard.classList.add("hidden");
+          renderAdminStudentTable();
+          renderAdminTutorTable();
+        }
+      });
+
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+      });
+
+      const logoutBtn = document.getElementById("logout-btn");
+      logoutBtn.addEventListener("click", () => {
+        mainScreen.classList.add("hidden");
+        loginScreen.classList.remove("hidden");
+        loginUsername.value = "";
+        loginPassword.value = "";
+        loginRole.value = "";
+        loginCampus.value = "";
+        loginProgrammeType.value = "";
+        loginFaculty.value = "";
+        loginFacultyWrapper.classList.add("hidden");
+        loginError.classList.add("hidden");
+        toastEl.classList.add("hidden");
+        currentUserId = null;
+        currentRole = null;
+        currentUserProfile = null;
+        updateUserBanner();
+        window.scrollTo(0, 0);
+      });
+
+      /* ---------- Course Links → Lecturer Section (TOGGLE) ---------- */
+
+      const courseLinks = document.querySelectorAll(".course-link");
+      const lecturerSection = document.getElementById("lecturer-section");
+      const courseLecturerBlocks = document.querySelectorAll(".course-lecturers");
+      let currentCourseShown = null;
+
+      courseLinks.forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const courseKey = this.dataset.course;
+
+          if (lecturerSection.classList.contains("hidden") || currentCourseShown !== courseKey) {
+            lecturerSection.classList.remove("hidden");
+            currentCourseShown = courseKey;
+
+            courseLecturerBlocks.forEach(block => {
+              if (block.dataset.courseDetail === courseKey) {
+                block.classList.remove("hidden");
+              } else {
+                block.classList.add("hidden");
+              }
+            });
+
+            lecturerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            lecturerSection.classList.add("hidden");
+            currentCourseShown = null;
+            courseLecturerBlocks.forEach(block => block.classList.add("hidden"));
+          }
+        });
+      });
+
+      /* ---------- Booking Form: Show/Hide + Dynamic Fields ---------- */
+
+      const showBookingBtn   = document.getElementById("show-booking-form");
+      const hideBookingBtn   = document.getElementById("hide-booking-form");
+      const bookingWrapper   = document.getElementById("booking-form-wrapper");
+
+      const courseSelect     = document.getElementById("bk-course");
+      const taskSelect       = document.getElementById("bk-task");
+      const lecturerSelect   = document.getElementById("bk-lecturer");
+      const modeSelect       = document.getElementById("bk-mode");
+      const timeslotSelect   = document.getElementById("bk-timeslot");
+      const notesTextarea    = document.getElementById("bk-notes");
+      const submitBookingBtn = document.getElementById("submit-booking-btn");
+
+      function resetLecturerSelect() {
+        lecturerSelect.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Select peer tutor";
+        opt.disabled = true;
+        opt.selected = true;
+        lecturerSelect.appendChild(opt);
+        lecturerSelect.disabled = true;
+      }
+
+      function resetTimeslotSelect() {
+        timeslotSelect.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Select timeslot";
+        opt.disabled = true;
+        opt.selected = true;
+        timeslotSelect.appendChild(opt);
+        timeslotSelect.disabled = true;
+      }
+
+      function resetModeSelect() {
+        modeSelect.innerHTML = "";
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Select session mode";
+        opt.disabled = true;
+        opt.selected = true;
+        modeSelect.appendChild(opt);
+        modeSelect.disabled = true;
+      }
+
+      function populateLecturerOptions(courseKey) {
+        resetLecturerSelect();
+        resetModeSelect();
+        resetTimeslotSelect();
+
+        const courseConfig = bookingData[courseKey];
+        if (!courseKey || !courseConfig) return;
+
+        const lecturers = Object.keys(courseConfig);
+        if (!lecturers.length) return;
+
+        lecturers.forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          lecturerSelect.appendChild(opt);
+        });
+      }
+
+      showBookingBtn.addEventListener("click", () => {
+        if (!currentUserId || currentRole !== "student") {
+          showToast("Please log in as a student before booking a peer tutor.");
+          return;
+        }
+        bookingWrapper.classList.remove("hidden");
+        courseSelect.selectedIndex = 0;
+        taskSelect.selectedIndex   = 0;
+        taskSelect.disabled        = true;
+        resetLecturerSelect();
+        resetModeSelect();
+        resetTimeslotSelect();
+        notesTextarea.value        = "";
+      });
+
+      // Cancel button → hide form + reset fields
+      hideBookingBtn.addEventListener("click", () => {
+        bookingWrapper.classList.add("hidden");
+
+        // Reset the entire form when closing
+        courseSelect.selectedIndex = 0;
+        taskSelect.selectedIndex   = 0;
+        taskSelect.disabled        = true;
+        resetLecturerSelect();
+        resetModeSelect();
+        resetTimeslotSelect();
+        notesTextarea.value        = "";
+      });
+
+      // Step 1: Course selected → enable Academic task
+      courseSelect.addEventListener("change", () => {
+        const courseKey = courseSelect.value;
+        if (courseKey) {
+          taskSelect.disabled = false;
+        } else {
+          taskSelect.disabled = true;
+        }
+        taskSelect.selectedIndex = 0;
+        resetLecturerSelect();
+        resetModeSelect();
+        resetTimeslotSelect();
+      });
+
+      // Step 2: Academic task selected → enable Preferred Tutor
+      taskSelect.addEventListener("change", () => {
+        const courseKey = courseSelect.value;
+        if (!taskSelect.value || !courseKey) {
+          resetLecturerSelect();
+          resetModeSelect();
+          resetTimeslotSelect();
+          return;
+        }
+        populateLecturerOptions(courseKey);
+        lecturerSelect.disabled = true;
+        const hasOptions = lecturerSelect.options.length > 1;
+        if (hasOptions) {
+          lecturerSelect.disabled = false;
+        }
+      });
+
+      // Step 3: Tutor selected → enable Session Mode (modes from tutor profile)
+      lecturerSelect.addEventListener("change", () => {
+        const courseKey    = courseSelect.value;
+        const lecturerName = lecturerSelect.value;
+
+        resetModeSelect();
+        resetTimeslotSelect();
+        if (!courseKey || !lecturerName) return;
+
+        const config = bookingData[courseKey] && bookingData[courseKey][lecturerName];
+        if (!config) return;
+
+        const modes = config.modes || [];
+        if (!modes.length) return;
+
+        modes.forEach(m => {
+          const opt = document.createElement("option");
+          opt.value = m;
+          opt.textContent = m;
+          modeSelect.appendChild(opt);
+        });
+        modeSelect.disabled = false;
+      });
+
+      // Step 4: Session mode selected → enable & populate timeslot dropdown
+      modeSelect.addEventListener("change", () => {
+        const courseKey    = courseSelect.value;
+        const lecturerName = lecturerSelect.value;
+
+        resetTimeslotSelect();
+        if (!courseKey || !lecturerName || !modeSelect.value) return;
+
+        const config = bookingData[courseKey] && bookingData[courseKey][lecturerName];
+        if (!config) return;
+
+        const slots = config.slots || [];
+        if (!slots.length) return;
+
+        const realSlots = [];
+        slots.forEach(slot => {
+          const opt = document.createElement("option");
+          opt.value = slot;
+          opt.textContent = slot;
+          const lower = slot.toLowerCase();
+          if (lower.includes("no available time slot")) {
+            opt.disabled = true;
+          } else {
+            realSlots.push(slot);
+          }
+          timeslotSelect.appendChild(opt);
+        });
+
+        if (realSlots.length > 0) {
+          timeslotSelect.disabled = false;
+        }
+      });
+
+      // Submit booking → push into bookings array
+      submitBookingBtn.addEventListener("click", () => {
+        if (!currentUserId || currentRole !== "student") {
+          showToast("Please log in as a student before submitting a booking.");
+          return;
+        }
+
+        const courseKey    = courseSelect.value;
+        const courseLabel  = courseSelect.options[courseSelect.selectedIndex]?.textContent || "";
+        const academicTask = taskSelect.value;
+        const tutorName    = lecturerSelect.value;
+        const modeVal      = modeSelect.value;
+        const timeslotVal  = timeslotSelect.value;
+        const notesVal     = notesTextarea.value.trim();
+
+        if (!courseKey || !academicTask || !tutorName || !modeVal || !timeslotVal) {
+          showToast("Please complete course, academic task, tutor, session mode and timeslot before submitting.");
+          return;
+        }
+
+        const learnerName = currentUserProfile && currentUserProfile.name
+          ? currentUserProfile.name
+          : currentUserId;
+
+        const booking = {
+          id: "b" + Date.now(),
+          learnerId: currentUserId,
+          learnerName,
+          courseKey,
+          courseName: courseLabel,
+          tutorName,
+          mode: modeVal,
+          timeslot: timeslotVal,
+          academicTask,
+          notes: notesVal,
+          status: "pending",
+          declineReason: "",
+          rating: null,
+          ratingComment: "",
+          createdAt: new Date().toLocaleString()
+        };
+
+        bookings.push(booking);
+        saveState();
+        bookingWrapper.classList.add("hidden");
+
+        showToast("Peer tutoring request has been recorded. You can track the status under 'Booking Status & Feedback'.");
+        renderTutorBookings(); // in case tutor is viewing
+        renderStudentBookingStatus();
+      });
+
+      /* ---------- Tutor Dashboard Logic ---------- */
+
+      const tutorBookingTable   = document.getElementById("tutor-booking-table");
+      const tutorBookingTbody   = document.getElementById("tutor-booking-tbody");
+      const tutorBookingEmpty   = document.getElementById("tutor-booking-empty");
+
+      const tpWrapper   = document.getElementById("tutor-profile-wrapper");
+      const tpEmptyText = document.getElementById("tutor-profile-empty");
+      const tpCourse    = document.getElementById("tp-course");
+      const tpProgramme = document.getElementById("tp-programme");
+      const tpEmail     = document.getElementById("tp-email");
+      const tpPhone     = document.getElementById("tp-phone");
+      const tpSlots     = document.getElementById("tp-slots");
+      const tpSaveBtn   = document.getElementById("tp-save");
+      const tutorProfileHeader = document.getElementById("tutor-profile-header");
+      const tutorPointsDisplay = document.getElementById("tutor-points-display");
+      const tpModeCheckboxes   = document.querySelectorAll(".tp-mode");
+
+      function updateTutorPointsUI() {
+        if (!currentUserProfile || currentRole !== "peer-tutor") return;
+        const pts = currentUserProfile.points || 0;
+        tutorPointsDisplay.textContent = `TutorLink Points: ${pts} pts`;
+      }
+
+      // Fill current peer tutor profile
+      function fillCurrentTutorProfile() {
+        // If no tutor profile
+        if (!currentUserProfile || currentRole !== "peer-tutor") {
+          tpWrapper.classList.add("hidden");
+          tpEmptyText.textContent =
+            "Your profile will load automatically based on your TutorLink login.";
+          tpEmptyText.classList.remove("hidden");
+          return;
+        }
+
+        const tutor = currentUserProfile;
+        const courseLabel =
+          tutor.courseLabel || courses[tutor.courseKey] || (tutor.courseKey || "").toUpperCase();
+
+        // Header: only tutor name
+        tutorProfileHeader.innerHTML = `<strong>${tutor.name}</strong>`;
+
+        // Read-only lines
+        tpCourse.textContent = courseLabel;
+        tpProgramme.textContent = `${tutor.yearLabel || ""} - ${tutor.programme || ""}`;
+
+        tpEmail.value = tutor.email || "";
+        tpPhone.value = tutor.phone || "";
+        tpSlots.value = (tutor.slots || []).join("\n");
+
+        // Session modes checkboxes
+        tpModeCheckboxes.forEach(cb => {
+          cb.checked = tutor.sessionModes && tutor.sessionModes.includes(cb.value);
+        });
+
+        tpWrapper.classList.remove("hidden");
+        tpEmptyText.classList.add("hidden");
+
+        updateTutorPointsUI();
+      }
+
+      tpSaveBtn.addEventListener("click", () => {
+        if (!currentUserProfile || currentRole !== "peer-tutor") return;
+
+        const tutor = currentUserProfile;
+
+        tutor.email = tpEmail.value.trim();
+        tutor.phone = tpPhone.value.trim();
+        const lines = tpSlots.value
+          .split("\n")
+          .map(l => l.trim())
+          .filter(Boolean);
+        tutor.slots = lines;
+
+        const selectedModes = Array.from(tpModeCheckboxes)
+          .filter(cb => cb.checked)
+          .map(cb => cb.value);
+        tutor.sessionModes = selectedModes;
+
+        rebuildBookingData();
+        renderPeerTutorCards();
+        renderTutorBookings();
+        saveState();
+
+        showToast("Your TutorLink profile has been updated.");
+      });
+
+      function renderTutorBookings() {
+        if (!currentUserProfile || currentRole !== "peer-tutor") return;
+
+        const tutor = currentUserProfile;
+        const tutorDisplayName = getDisplayName(tutor);
+
+        const relevant = bookings.filter(b => b.tutorName === tutorDisplayName);
+        tutorBookingTbody.innerHTML = "";
+
+        if (relevant.length === 0) {
+          tutorBookingTable.classList.add("hidden");
+          tutorBookingEmpty.textContent =
+            "No peer tutoring bookings yet for this tutor.";
+          tutorBookingEmpty.classList.remove("hidden");
+          return;
+        }
+
+        tutorBookingEmpty.classList.add("hidden");
+        tutorBookingTable.classList.remove("hidden");
+
+        relevant.forEach((b, index) => {
+          const tr = document.createElement("tr");
+
+          let statusClass = "status-pending";
+          let statusLabel = "Pending";
+          if (b.status === "accepted") {
+            statusClass = "status-accepted";
+            statusLabel = "Accepted";
+          } else if (b.status === "declined") {
+            statusClass = "status-declined";
+            statusLabel = "Declined";
+          }
+
+          const ratingText = b.rating != null ? `${b.rating}/10` : "-";
+          const taskText   = getAcademicTaskText(b);
+          const requestDetailsText = b.notes || "-";
+
+          const studentLabel = b.learnerName
+            ? `${b.learnerName} (${b.learnerId})`
+            : b.learnerId;
+
+          let feedbackText = "-";
+          if (b.ratingComment) {
+            feedbackText = b.ratingComment;
+          } else if (b.status === "declined" && b.declineReason) {
+            feedbackText = b.declineReason;
+          }
+
+          // Actions area:
+          let statusActionsHtml = `
+            <div style="margin-bottom:4px;">
+              <span class="status-pill ${statusClass}">${statusLabel}</span>
+            </div>
+          `;
+
+          // Only show Accept / Decline buttons while status is pending
+          if (b.status === "pending") {
+            statusActionsHtml += `
+              <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:center;">
+                <button class="btn-secondary" data-booking-id="${b.id}" data-action="accept">Accept</button>
+                <button class="btn-secondary" data-booking-id="${b.id}" data-action="decline">Decline</button>
+              </div>
+            `;
+          }
+
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${studentLabel}</td>
+            <td>${b.courseName}</td>
+            <td>${taskText}</td>
+            <td>${b.mode}</td>
+            <td>${b.timeslot}</td>
+            <td>${requestDetailsText}</td>
+            <td>${statusActionsHtml}</td>
+            <td>${ratingText}</td>
+            <td>${feedbackText}</td>
+          `;
+          tutorBookingTbody.appendChild(tr);
+        });
+
+        // Attach accept/decline handlers
+        tutorBookingTbody.querySelectorAll("button[data-booking-id]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-booking-id");
+            const action = btn.getAttribute("data-action");
+            const booking = bookings.find(b => b.id === id);
+            if (!booking) return;
+
+            if (action === "accept") {
+              booking.status = "accepted";
+              booking.declineReason = "";
+              saveState();
+              renderTutorBookings();
+              renderStudentBookingStatus();
+            } else if (action === "decline") {
+              currentDeclineBookingId = id;
+              declineReasonInput.value = "";
+              declineModal.classList.remove("hidden");
+            }
+          });
+        });
+      }
+
+      // Decline modal handlers
+      declineCancelBtn.addEventListener("click", () => {
+        declineModal.classList.add("hidden");
+        currentDeclineBookingId = null;
+      });
+
+      declineConfirmBtn.addEventListener("click", () => {
+        if (!currentDeclineBookingId) {
+          declineModal.classList.add("hidden");
+          return;
+        }
+        const reason = declineReasonInput.value.trim();
+        const booking = bookings.find(b => b.id === currentDeclineBookingId);
+        if (!booking) {
+          declineModal.classList.add("hidden");
+          return;
+        }
+        booking.status = "declined";
+        booking.declineReason = reason;
+        saveState();
+        currentDeclineBookingId = null;
+        declineModal.classList.add("hidden");
+        renderTutorBookings();
+        renderStudentBookingStatus();
+        showToast("Booking request has been declined.");
+      });
+
+      /* ---------- Student Booking Status + Rating Logic ---------- */
+
+      const studentBookingStatusTbody = document.getElementById("student-booking-status-tbody");
+      const ratingFormCard = document.getElementById("rating-form-card");
+      const ratingFormSubtitle = document.getElementById("rating-form-subtitle");
+      const ratingScoreSelect = document.getElementById("rating-score");
+      const ratingCommentTextarea = document.getElementById("rating-comment");
+      const ratingSubmitBtn = document.getElementById("rating-submit-btn");
+      const ratingCancelBtn = document.getElementById("rating-cancel-btn");
+
+      function renderStudentBookingStatus() {
+        if (!currentUserId || currentRole !== "student") {
+          studentBookingStatusTbody.innerHTML = "";
+          return;
+        }
+
+        const myBookings = bookings.filter(b => b.learnerId === currentUserId);
+        studentBookingStatusTbody.innerHTML = "";
+
+        if (myBookings.length === 0) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td colspan="10" style="text-align:center; font-size:12px; color:#777;">
+            No peer tutoring requests have been submitted yet.
+          </td>`;
+          studentBookingStatusTbody.appendChild(tr);
+          return;
+        }
+
+        myBookings.forEach((b, index) => {
+          const tr = document.createElement("tr");
+
+          let statusClass = "status-pending";
+          let statusLabel = "Pending";
+          if (b.status === "accepted") {
+            statusClass = "status-accepted";
+            statusLabel = "Accepted";
+          } else if (b.status === "declined") {
+            statusClass = "status-declined";
+            statusLabel = "Declined";
+          }
+
+          const ratingText = b.rating != null ? `${b.rating}/10` : "-";
+          const taskText   = getAcademicTaskText(b);
+          const requestDetailsText = b.notes || "-";
+
+          let statusNotesText = "-";
+          if (b.status === "declined" && b.declineReason) {
+            statusNotesText = b.declineReason;
+          } else if (b.ratingComment) {
+            statusNotesText = b.ratingComment;
+          }
+
+          let ratingCellHtml = ratingText;
+          if (b.status === "accepted" && b.rating == null) {
+            ratingCellHtml = `<button class="btn-secondary" data-rate-booking-id="${b.id}">Rate now</button>`;
+          }
+
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${b.courseName}</td>
+            <td>${taskText}</td>
+            <td>${b.tutorName}</td>
+            <td>${b.mode}</td>
+            <td>${b.timeslot}</td>
+            <td>${requestDetailsText}</td>
+            <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+            <td>${statusNotesText}</td>
+            <td>${ratingCellHtml}</td>
+          `;
+          studentBookingStatusTbody.appendChild(tr);
+        });
+
+        // Attach rating button handlers
+        studentBookingStatusTbody.querySelectorAll("button[data-rate-booking-id]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-rate-booking-id");
+            const booking = bookings.find(b => b.id === id);
+            if (!booking) return;
+
+            currentRatingBookingId = id;
+            ratingScoreSelect.value = "";
+            ratingCommentTextarea.value = "";
+            ratingFormSubtitle.textContent =
+              `How was your class with ${booking.tutorName} for ${booking.courseName}?`;
+            ratingFormCard.classList.remove("hidden");
+            ratingFormCard.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        });
+      }
+
+      ratingCancelBtn.addEventListener("click", () => {
+        ratingFormCard.classList.add("hidden");
+        currentRatingBookingId = null;
+      });
+
+      ratingSubmitBtn.addEventListener("click", () => {
+        if (!currentRatingBookingId) {
+          ratingFormCard.classList.add("hidden");
+          return;
+        }
+
+        const ratingVal = parseInt(ratingScoreSelect.value, 10);
+        const commentVal = ratingCommentTextarea.value.trim();
+
+        if (!ratingVal || ratingVal < 1 || ratingVal > 10) {
+          showToast("Please select a rating between 1 and 10.");
+          return;
+        }
+
+        const booking = bookings.find(b => b.id === currentRatingBookingId);
+        if (!booking) {
+          ratingFormCard.classList.add("hidden");
+          return;
+        }
+
+        booking.rating = ratingVal;
+        booking.ratingComment = commentVal;
+
+        // Update tutor points
+        const tutor = peerTutors.find(t => getDisplayName(t) === booking.tutorName);
+        if (tutor) {
+          tutor.points = (tutor.points || 0) + ratingVal;
+        }
+
+        saveState();
+        updateTutorPointsUI();
+        renderTutorBookings();
+        renderStudentBookingStatus();
+
+        ratingFormCard.classList.add("hidden");
+        currentRatingBookingId = null;
+
+        showToast("Thank you. Your rating and feedback have been sent to your peer tutor.");
+      });
+
+      /* ---------- ADMIN DASHBOARD LOGIC ---------- */
+
+      // Student admin
+      const admStuName      = document.getElementById("adm-stu-name");
+      const admStuId        = document.getElementById("adm-stu-id");
+      const admStuEmail     = document.getElementById("adm-stu-email");
+      const admStuPassword  = document.getElementById("adm-stu-password");
+      const admAddStudent   = document.getElementById("adm-add-student");
+      const admStuTbody     = document.getElementById("adm-stu-tbody");
+
+      function renderAdminStudentTable() {
+        admStuTbody.innerHTML = "";
+        students.forEach((s, index) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${s.name}</td>
+            <td>${s.studentId || "-"}</td>
+            <td>${s.email || "-"}</td>
+            <td>${s.password || "-"}</td>
+            <td>
+              <button
+                data-stuid="${s.studentId || ""}"
+                class="btn-secondary"
+                style="padding:4px 10px;font-size:11px;">
+                Remove
+              </button>
+            </td>
+          `;
+          admStuTbody.appendChild(tr);
+        });
+
+        // attach delete handlers
+        admStuTbody.querySelectorAll("button[data-stuid]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-stuid");
+            students = students.filter(s => s.studentId !== id);
+            saveState();
+            renderAdminStudentTable();
+            showToast("Student account removed.");
+          });
+        });
+      }
+
+      admAddStudent.addEventListener("click", () => {
+        const name = admStuName.value.trim();
+        const sid  = admStuId.value.trim();
+        const email = admStuEmail.value.trim();
+        const password = admStuPassword.value.trim();
+
+        if (!name || !sid || !password) {
+          showToast("Please fill at least Student Name, Student ID and Login Password.");
+          return;
+        }
+
+        let existing = students.find(s => s.studentId === sid);
+        if (existing) {
+          existing.name = name;
+          existing.email = email;
+          existing.password = password;
+        } else {
+          students.push({
+            name,
+            studentId: sid,
+            email,
+            password
+          });
+        }
+
+        saveState();
+        renderAdminStudentTable();
+        showToast("Student account added/updated.");
+
+        admStuName.value = "";
+        admStuId.value = "";
+        admStuEmail.value = "";
+        admStuPassword.value = "";
+      });
+
+      // Tutor admin
+      const admTutorName      = document.getElementById("adm-tutor-name");
+      const admTutorStuId     = document.getElementById("adm-tutor-stu-id");
+      const admTutorYear      = document.getElementById("adm-tutor-year");
+      const admTutorProgramme = document.getElementById("adm-tutor-programme");
+      const admTutorCourse    = document.getElementById("adm-tutor-course");
+      const admTutorEmail     = document.getElementById("adm-tutor-email");
+      const admTutorPhone     = document.getElementById("adm-tutor-phone");
+      const admTutorPassword  = document.getElementById("adm-tutor-password");
+      const admAddTutor       = document.getElementById("adm-add-tutor");
+      const admTutorTbody     = document.getElementById("adm-tutor-tbody");
+
+      function renderAdminTutorTable() {
+        admTutorTbody.innerHTML = "";
+        peerTutors.forEach((t, index) => {
+          const courseLabel =
+            t.courseLabel || courses[t.courseKey] || (t.courseKey || "").toUpperCase();
+          const pts = t.points || 0;
+          const pwd = t.password || "-";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${t.name}</td>
+            <td>${t.studentId || "-"}</td>
+            <td>${t.yearLabel || ""}</td>
+            <td>${t.programme || ""}</td>
+            <td>${courseLabel}</td>
+            <td>${t.email || "-"}</td>
+            <td>${t.phone || "-"}</td>
+            <td>${pwd}</td>
+            <td>${pts}</td>
+            <td>
+              <button data-stuid="${t.studentId || ""}" data-action="reset"
+                class="btn-secondary"
+                style="padding:4px 8px;font-size:11px;">
+                Reset points
+              </button>
+              <button data-stuid="${t.studentId || ""}" data-action="remove"
+                class="btn-secondary"
+                style="padding:4px 8px;font-size:11px; margin-left:4px;">
+                Remove
+              </button>
+            </td>
+          `;
+          admTutorTbody.appendChild(tr);
+        });
+
+        admTutorTbody.querySelectorAll("button[data-stuid]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const stuId = btn.getAttribute("data-stuid");
+            const action = btn.getAttribute("data-action");
+            const tutor = peerTutors.find(t => t.studentId === stuId);
+            if (!tutor) return;
+
+            if (action === "remove") {
+              peerTutors = peerTutors.filter(t => t.studentId !== stuId);
+              saveState();
+              rebuildBookingData();
+              renderPeerTutorCards();
+              renderTutorBookings();
+              renderAdminTutorTable();
+              showToast("Peer tutor account removed.");
+            } else if (action === "reset") {
+              tutor.points = 0;
+              saveState();
+              rebuildBookingData();
+              renderAdminTutorTable();
+              // If the logged-in tutor is the same, update their points pill
+              if (currentUserProfile && currentUserProfile.studentId === stuId) {
+                currentUserProfile.points = 0;
+                updateTutorPointsUI();
+              }
+              showToast("TutorLink points have been reset for this tutor.");
+            }
+          });
+        });
+      }
+
+      admAddTutor.addEventListener("click", () => {
+        const name = admTutorName.value.trim();
+        const stuId = admTutorStuId.value.trim();
+        const yearLabel = admTutorYear.value;
+        const programme = admTutorProgramme.value.trim();
+        const courseRaw = admTutorCourse.value.trim();
+        const courseKey = deriveCourseKey(courseRaw);
+        const email = admTutorEmail.value.trim();
+        const phone = admTutorPhone.value.trim();
+        const password = admTutorPassword.value.trim();
+
+        if (!name || !stuId || !password || !courseKey) {
+          showToast("Please fill at least Tutor Name, Student ID, Course and Login Password.");
+          return;
+        }
+
+        let existing = peerTutors.find(t => t.studentId === stuId);
+        if (existing) {
+          existing.name = name;
+          existing.studentId = stuId;
+          existing.yearLabel = yearLabel;
+          existing.programme = programme;
+          existing.courseKey = courseKey;
+          existing.courseLabel = courseRaw || courses[courseKey] || courseKey.toUpperCase();
+          existing.email = email;
+          existing.phone = phone;
+          existing.password = password;
+          if (existing.points == null) existing.points = 0;
+          if (!existing.sessionModes) {
+            existing.sessionModes = ["1-on-1 Session", "Small group (2-4 students)", "Large group (5-7 students)"];
+          }
+        } else {
+          peerTutors.push({
+            id: "t" + Date.now(),
+            name,
+            studentId: stuId,
+            yearLabel,
+            programme,
+            courseKey,
+            courseLabel: courseRaw || courses[courseKey] || courseKey.toUpperCase(),
+            email,
+            phone,
+            slots: [],
+            sessionModes: ["1-on-1 Session", "Small group (2-4 students)", "Large group (5-7 students)"],
+            points: 0,
+            password
+          });
+        }
+        if (courseRaw && !courses[courseKey]) {
+          courses[courseKey] = courseRaw;
+        }
+        saveState();
+        rebuildBookingData();
+        renderPeerTutorCards();
+        renderTutorBookings();
+        renderAdminTutorTable();
+        showToast("Peer tutor account added/updated.");
+
+        admTutorName.value = "";
+        admTutorStuId.value = "";
+        admTutorYear.value = "";
+        admTutorProgramme.value = "";
+        admTutorCourse.value = "";
+        admTutorEmail.value = "";
+        admTutorPhone.value = "";
+        admTutorPassword.value = "";
+      });
+
+      // Initial render for admin tables (in case you inspect before logging in)
+      renderAdminStudentTable();
+      renderAdminTutorTable();
+    });
+  </script>
+</body>
+</html>
